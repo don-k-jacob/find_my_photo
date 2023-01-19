@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+import shutil
 # from authentication import authenticate
 
 def take_picture():
@@ -31,13 +32,19 @@ def search_images(folder_path, detected_face):
                 for (x, y, w, h) in faces:
                     face_from_image = gray[y:y+h, x:x+w]
                     result = cv2.matchTemplate(detected_face, face_from_image, cv2.TM_CCOEFF_NORMED)
-                    if result >= 0.7:
-                        print(f'Image {file} contains the same face')
+                    if np.any(result >= 0.7):
+                        save_matched_image(image_path)
+                        print(f'Image {file} contains the same face and saved to matched_images folder')
                     else:
                         print(f'Image {file} does not contain the same face')
+                    
+def save_matched_image(image_path):
+    shutil.copy(image_path, "images/match/")
 
 def take_selfie_and_search():
     take_picture()
     detected_face = detect_face("selfie.jpg")
-    search_images("/Users/don_k_jacob/", detected_face)
+    print("pic saved")
+    search_images("images", detected_face)
 
+take_selfie_and_search()
