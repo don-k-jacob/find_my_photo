@@ -23,7 +23,7 @@ def detect_face(image_path):
 def search_images(folder_path, detected_face):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith(".jpg"):
+            if file.endswith(".jpeg"):
                 image_path = os.path.join(root, file)
                 image = cv2.imread(image_path)
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -32,6 +32,8 @@ def search_images(folder_path, detected_face):
                 for (x, y, w, h) in faces:
                     face_from_image = gray[y:y+h, x:x+w]
                     result = cv2.matchTemplate(detected_face, face_from_image, cv2.TM_CCOEFF_NORMED)
+                    print(result)
+
                     if np.any(result >= 0.7):
                         save_matched_image(image_path)
                         print(f'Image {file} contains the same face and saved to matched_images folder')
